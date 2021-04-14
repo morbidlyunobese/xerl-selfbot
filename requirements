@@ -1,0 +1,8 @@
+make sure pip is installed to python path
+open up command prompt
+
+pip install discord
+pip install pyfiglet
+pip install colored
+
+done! enjoy
