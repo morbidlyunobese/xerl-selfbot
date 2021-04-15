@@ -61,6 +61,50 @@ async def ascii(ctx):
     await ctx.send(f'```{result}```')
 
 @client.command()
+async def urban(ctx):
+    await ctx.message.delete()
+
+    term = input(f'    {Xerl} Word You Want To Lookup > ')
+
+    url = "https://mashape-community-urban-dictionary.p.rapidapi.com/define"
+    querystring = {"term":f'{term}'}
+    
+    headers = {
+    'x-rapidapi-key': "180fbefe4dmshf8af1cef74a71b9p1ec0fbjsn183abeb803ef",
+    'x-rapidapi-host': "mashape-community-urban-dictionary.p.rapidapi.com"
+    }
+
+    response = requests.request("GET",url,headers=headers,params=querystring)
+    json = response.json()
+
+    try:
+        page = int(input(f'    {Xerl} Page Number (Integer 0-5) > '))
+        if page > 5 and page < 0:
+            print(f'    {Err} Tried To Index With Nil.')
+
+        else:
+            try:      
+                definition = json['list'][page]['definition']
+                author = json['list'][page]['author']
+                likes =  json['list'][page]['thumbs_up']
+
+            except Exception as ErrorCode:
+                print(f'    {Err} {ErrorCode}')
+
+    except ValueError:
+        print(f'   {Err} Please Input An Integer.')
+
+
+    try:
+        emb = discord.Embed(title='URBAN DICTIONARY',description="Author: "+author,color=0xffdbdb)
+        emb.add_field(name=f'Word: {term}',value=definition,inline=True)
+        emb.set_footer(text=f"This Post Has {likes} Likes")
+
+        await ctx.send(embed=emb)
+    except IndexError:
+        print(f'    {Err} The Term {term} Could Not Be Found In Urban Dictionary.')
+
+@client.command()
 async def anime(ctx):
     await ctx.message.delete()
     webbrowser.open("https://www.nekos.fun/apidoc.html")
